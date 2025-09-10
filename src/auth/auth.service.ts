@@ -1,8 +1,7 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
+import { UsuariosService } from '../usuarios/usuarios.service';
 import * as bcrypt from 'bcrypt';
-import { UsuariosService } from 'src/usuarios/usuarios.service';
-import { Usuario } from 'src/usuarios/usuario.entity';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
@@ -11,25 +10,42 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async validateUser(correo: string, password: string): Promise<Usuario> {
-    const usuario = await this.usuariosService.findByEmail(correo);
-    if (!usuario) throw new UnauthorizedException('Credenciales inválidas');
+  async validateUser(correo: string, contraseña: string) {
+    const user = await this.usuariosService.findByEmail(correo);
+    if (!user) throw new UnauthorizedException('Usuario no encontrado');
 
-    const match = await bcrypt.compare(password, usuario.contraseña);
-    if (!match) throw new UnauthorizedException('Credenciales inválidas');
+    const isPasswordValid = await bcrypt.compare(contraseña, user.contraseña);
+    if (!isPasswordValid)
+      throw new UnauthorizedException('Contraseña incorrecta');
 
-    return usuario;
+    return user;
   }
 
-  async login(usuario: Usuario) {
-    const payload = { sub: usuario.id, correo: usuario.correo, rol: usuario.rol.nombre };
+  async login(user: any) {
+    const payload = {
+      id: user.id,
+      correo: user.correo,
+      rol: user.rol.nombre,
+      nombre: user.nombre,
+      apellidos: user.apellidos,
+    };
+
+    const token = this.jwtService.sign(payload);
+
     return {
-      access_token: this.jwtService.sign(payload),
+      access_token: token,
       usuario: {
-        id: usuario.id,
-        correo: usuario.correo,
-        rol: usuario.rol.nombre,
+        id: user.id,
+        correo: user.correo,
+        rol: user.rol.nombre,
+        nombre: user.nombre,
+        apellidos: user.apellidos,
       },
     };
+  }
+
+  async hashPassword(plainPassword: string): Promise<string> {
+    const salt = Number(process.env.BCRYPT_SALT) || 10;
+    return bcrypt.hash(plainPassword, salt);
   }
 }
