@@ -26,7 +26,10 @@ export class UsuariosService {
   async create(usuario: Partial<Usuario>): Promise<Usuario> {
     // encriptar contraseña antes de guardar
     const salt = await bcrypt.genSalt(10);
-    usuario.contraseña = await bcrypt.hash(usuario.contraseña!, salt);
+    if (!usuario.contraseña) {
+      throw new Error('La contraseña es obligatoria');
+    }
+    usuario.contraseña = await bcrypt.hash(usuario.contraseña, salt);
 
     const newUser = this.usuariosRepository.create(usuario);
     return this.usuariosRepository.save(newUser);
@@ -42,7 +45,6 @@ export class UsuariosService {
   }
 
   async findByEmail(correo: string): Promise<Usuario | null> {
-  return this.usuariosRepository.findOne({ where: { correo } });
-}
-
+    return this.usuariosRepository.findOne({ where: { correo } });
+  }
 }
