@@ -1,7 +1,12 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
-import { Rol } from 'src/roles/rol.entity';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, JoinColumn } from 'typeorm';
+import { Rol } from '../roles/rol.entity';
+import { Ticket } from '../tickets/ticket.entity';
+import { AsignacionTicket } from '../asignaciones-tickets/asignacion-ticket.entity';
+import { Evidencia } from '../evidencias/evidencia.entity';
+import { HistorialStatus } from '../historial-status/historial-status.entity';
+import { Notificacion } from '../notificaciones/notificacion.entity';
 
-@Entity('usuarios') // nombre exacto de la tabla en BD
+@Entity('usuarios')
 export class Usuario {
   @PrimaryGeneratedColumn()
   id: number;
@@ -21,7 +26,7 @@ export class Usuario {
   @Column({ length: 255 })
   contraseña: string;
 
-  @ManyToOne(() => Rol, rol => rol.usuarios, { eager: true })
+  @ManyToOne(() => Rol, rol => rol.usuarios)
   @JoinColumn({ name: 'rol_id' })
   rol: Rol;
 
@@ -30,4 +35,23 @@ export class Usuario {
 
   @Column({ default: true })
   activo: boolean;
+
+  // Relaciones
+  @OneToMany(() => Ticket, ticket => ticket.cliente)
+  ticketsCreados: Ticket[];
+
+  @OneToMany(() => AsignacionTicket, asign => asign.empleado)
+  asignacionesComoEmpleado: AsignacionTicket[];
+
+  @OneToMany(() => AsignacionTicket, asign => asign.jefe)
+  asignacionesComoJefe: AsignacionTicket[];
+
+  @OneToMany(() => Evidencia, evidencia => evidencia.usuario)
+  evidencias: Evidencia[];
+
+  @OneToMany(() => HistorialStatus, historial => historial.usuario)
+  historialStatus: HistorialStatus[];
+
+  @OneToMany(() => Notificacion, notificacion => notificacion.usuario)
+  notificaciones: Notificacion[];
 }
