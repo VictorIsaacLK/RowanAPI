@@ -6,6 +6,13 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsuariosModule } from './usuarios/usuarios.module';
 import { RolesModule } from './roles/roles.module';
 import { AuthModule } from './auth/auth.module';
+import { AsignacionesTicketsModule } from './asignaciones-tickets/asignaciones-tickets.module';
+import { EdificiosModule } from './edificios/edificios.module';
+import { EvidenciasModule } from './evidencias/evidencias.module';
+import { HistorialStatusModule } from './historial-status/historial-status.module';
+import { NotificacionesModule } from './notificaciones/notificaciones.module';
+import { TicketsModule } from './tickets/tickets.module';
+import { TiposSistemaModule } from './tipos-sistema/tipos-sistema.module';
 
 @Module({
   imports: [
@@ -23,6 +30,13 @@ import { AuthModule } from './auth/auth.module';
     UsuariosModule,
     RolesModule,
     AuthModule,
+    AsignacionesTicketsModule,
+    EdificiosModule,
+    EvidenciasModule,
+    HistorialStatusModule,
+    NotificacionesModule,
+    TicketsModule,
+    TiposSistemaModule,
   ],
   controllers: [AppController],
   providers: [AppService],
