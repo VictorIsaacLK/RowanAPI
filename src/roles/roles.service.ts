@@ -7,19 +7,27 @@ import { Rol } from './rol.entity';
 export class RolesService {
   constructor(
     @InjectRepository(Rol)
-    private rolesRepository: Repository<Rol>,
+    private readonly rolRepo: Repository<Rol>,
   ) {}
 
   findAll(): Promise<Rol[]> {
-    return this.rolesRepository.find();
+    return this.rolRepo.find();
   }
 
   findOne(id: number): Promise<Rol | null> {
-    return this.rolesRepository.findOne({ where: { id } });
+    return this.rolRepo.findOne({ where: { id } });
   }
 
-  create(nombre: string): Promise<Rol> {
-    const rol = this.rolesRepository.create({ nombre });
-    return this.rolesRepository.save(rol);
+  create(rolData: Partial<Rol>): Promise<Rol> {
+    const rol = this.rolRepo.create(rolData);
+    return this.rolRepo.save(rol);
+  }
+
+  update(id: number, rolData: Partial<Rol>): Promise<any> {
+    return this.rolRepo.update(id, rolData);
+  }
+
+  remove(id: number): Promise<any> {
+    return this.rolRepo.delete(id);
   }
 }

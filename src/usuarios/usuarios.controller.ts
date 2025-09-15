@@ -17,17 +17,17 @@ export class UsuariosController {
   }
 
   @Post()
-  create(@Body() usuario: Partial<Usuario>): Promise<Usuario> {
-    return this.usuariosService.create(usuario);
+  create(@Body() usuarioData: Partial<Usuario>): Promise<Usuario> {
+    return this.usuariosService.create(usuarioData);
   }
 
   @Put(':id')
-  update(@Param('id') id: number, @Body() usuario: Partial<Usuario>): Promise<Usuario> {
-    return this.usuariosService.update(id, usuario);
+  update(@Param('id') id: number, @Body() usuarioData: Partial<Usuario>) {
+    return this.usuariosService.update(id, usuarioData);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: number): Promise<void> {
+  remove(@Param('id') id: number) {
     return this.usuariosService.remove(id);
   }
 }
