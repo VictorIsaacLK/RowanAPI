@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
 import { Ticket } from 'src/tickets/ticket.entity';
 import { Usuario } from 'src/usuarios/usuario.entity';
 
@@ -17,8 +17,10 @@ export class HistorialStatus {
   fecha_cambio: Date;
 
   @ManyToOne(() => Ticket, ticket => ticket.historialStatus)
+  @JoinColumn({ name: 'ticket_id' })
   ticket: Ticket;
 
   @ManyToOne(() => Usuario, usuario => usuario.historialStatus)
+  @JoinColumn({ name: 'usuario_id' })
   usuario: Usuario;
 }
