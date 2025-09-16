@@ -1,4 +1,11 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  OneToMany,
+  JoinColumn,
+} from 'typeorm';
 import { Rol } from 'src/roles/rol.entity';
 import { Ticket } from 'src/tickets/ticket.entity';
 import { AsignacionTicket } from 'src/asignaciones-tickets/asignacion-ticket.entity';
@@ -32,24 +39,25 @@ export class Usuario {
   @Column({ default: true })
   activo: boolean;
 
-  @ManyToOne(() => Rol, rol => rol.usuarios, { eager: true })
+  @ManyToOne(() => Rol, (rol) => rol.usuarios, { eager: true })
+  @JoinColumn({ name: 'rol_id' })
   rol: Rol;
 
-  @OneToMany(() => Ticket, ticket => ticket.cliente)
+  @OneToMany(() => Ticket, (ticket) => ticket.cliente)
   ticketsCliente: Ticket[];
 
-  @OneToMany(() => AsignacionTicket, asignacion => asignacion.empleado)
+  @OneToMany(() => AsignacionTicket, (asignacion) => asignacion.empleado)
   asignacionesEmpleado: AsignacionTicket[];
 
-  @OneToMany(() => AsignacionTicket, asignacion => asignacion.jefe)
+  @OneToMany(() => AsignacionTicket, (asignacion) => asignacion.jefe)
   asignacionesJefe: AsignacionTicket[];
 
-  @OneToMany(() => Evidencia, evidencia => evidencia.usuario)
+  @OneToMany(() => Evidencia, (evidencia) => evidencia.usuario)
   evidencias: Evidencia[];
 
-  @OneToMany(() => HistorialStatus, historial => historial.usuario)
+  @OneToMany(() => HistorialStatus, (historial) => historial.usuario)
   historialStatus: HistorialStatus[];
 
-  @OneToMany(() => Notificacion, notificacion => notificacion.usuario)
+  @OneToMany(() => Notificacion, (notificacion) => notificacion.usuario)
   notificaciones: Notificacion[];
 }

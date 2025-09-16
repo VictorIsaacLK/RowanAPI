@@ -5,7 +5,6 @@ import { UsuariosController } from './usuarios.controller';
 import { Usuario } from './usuario.entity';
 import { RolesModule } from 'src/roles/roles.module';
 
-
 @Module({
   imports: [TypeOrmModule.forFeature([Usuario]), RolesModule],
   controllers: [UsuariosController],

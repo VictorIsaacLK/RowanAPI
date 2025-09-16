@@ -1,7 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Rol } from './rol.entity';
+import { CreateRolDto } from './dto/create-rol.dto';
+import { UpdateRolDto } from './dto/update-rol.dto';
 
 @Injectable()
 export class RolesService {
@@ -14,20 +16,25 @@ export class RolesService {
     return this.rolRepo.find();
   }
 
-  findOne(id: number): Promise<Rol | null> {
-    return this.rolRepo.findOne({ where: { id } });
+  async findOne(id: number): Promise<Rol> {
+    const rol = await this.rolRepo.findOne({ where: { id } });
+    if (!rol) throw new NotFoundException('Rol no encontrado');
+    return rol;
   }
 
-  create(rolData: Partial<Rol>): Promise<Rol> {
-    const rol = this.rolRepo.create(rolData);
+  create(createRolDto: CreateRolDto): Promise<Rol> {
+    const rol = this.rolRepo.create(createRolDto);
     return this.rolRepo.save(rol);
   }
 
-  update(id: number, rolData: Partial<Rol>): Promise<any> {
-    return this.rolRepo.update(id, rolData);
+  async update(id: number, updateRolDto: UpdateRolDto): Promise<Rol> {
+    const rol = await this.findOne(id);
+    Object.assign(rol, updateRolDto);
+    return this.rolRepo.save(rol);
   }
 
-  remove(id: number): Promise<any> {
-    return this.rolRepo.delete(id);
+  async remove(id: number): Promise<void> {
+    const rol = await this.findOne(id);
+    await this.rolRepo.remove(rol);
   }
 }
