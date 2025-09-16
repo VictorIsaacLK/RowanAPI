@@ -15,8 +15,7 @@ export class AuthService {
     if (!user) throw new UnauthorizedException('Usuario no encontrado');
 
     const isPasswordValid = await bcrypt.compare(contraseña, user.contraseña);
-    if (!isPasswordValid)
-      throw new UnauthorizedException('Contraseña incorrecta');
+    if (!isPasswordValid) throw new UnauthorizedException('Contraseña incorrecta');
 
     return user;
   }
@@ -49,3 +48,4 @@ export class AuthService {
     return bcrypt.hash(plainPassword, salt);
   }
 }
+
