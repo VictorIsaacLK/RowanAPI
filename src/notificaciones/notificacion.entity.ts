@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
 import { Usuario } from 'src/usuarios/usuario.entity';
 import { Ticket } from 'src/tickets/ticket.entity';
 
@@ -20,8 +20,10 @@ export class Notificacion {
   fecha_envio: Date;
 
   @ManyToOne(() => Usuario, usuario => usuario.notificaciones)
+  @JoinColumn({ name: 'usuario_id' })
   usuario: Usuario;
 
   @ManyToOne(() => Ticket, ticket => ticket.notificaciones)
+  @JoinColumn({ name: 'ticket_id' })
   ticket: Ticket;
 }
