@@ -39,7 +39,7 @@ export class TicketsController {
   }
 
   @Delete(':id')
-  @ApiOperation({ summary: 'Eliminar un ticket por ID (NO SIRVE POR EL MOMENTO)' })
+  @ApiOperation({ summary: 'Eliminar un ticket por ID (NO SIRVE POR EL MOMENTO por efecto cascada, deberia desactivar nada mas)' })
   @ApiResponse({ status: 200, description: 'Ticket eliminado.' })
   remove(@Param('id') id: number) {
     return this.ticketsService.remove(id);
