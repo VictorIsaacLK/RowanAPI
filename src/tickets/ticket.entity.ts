@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, JoinColumn } from 'typeorm';
 import { Usuario } from 'src/usuarios/usuario.entity';
 import { Edificio } from 'src/edificios/edificio.entity';
 import { TipoSistema } from 'src/tipos-sistema/tipo-sistema.entity';
@@ -28,12 +28,15 @@ export class Ticket {
   fecha_actualizacion: Date;
 
   @ManyToOne(() => TipoSistema, tipo => tipo.tickets, { eager: true })
+  @JoinColumn({ name: 'tipo_sistema_id' })
   tipoSistema: TipoSistema;
 
   @ManyToOne(() => Edificio, edificio => edificio.tickets, { eager: true })
+  @JoinColumn({ name: 'edificio_id' })
   edificio: Edificio;
 
   @ManyToOne(() => Usuario, usuario => usuario.ticketsCliente, { eager: true })
+  @JoinColumn({ name: 'cliente_id' })
   cliente: Usuario;
 
   @OneToMany(() => AsignacionTicket, asignacion => asignacion.ticket)

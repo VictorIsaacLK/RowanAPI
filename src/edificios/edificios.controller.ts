@@ -2,6 +2,8 @@ import { Controller, Get, Post, Put, Delete, Param, Body } from '@nestjs/common'
 import { EdificiosService } from './edificios.service';
 import { Edificio } from './edificio.entity';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { CreateEdificioDto } from './dto/create-edificio.dto';
+import { UpdateEdificioDto } from './dto/update-edificio.dto';
 
 @ApiTags('Edificios')
 @Controller('edificios')
@@ -25,15 +27,15 @@ export class EdificiosController {
   @ApiOperation({ summary: 'Crear nuevo edificio' })
   @ApiResponse({ status: 201, description: 'Edificio creado correctamente.', type: Edificio })
   @Post()
-  create(@Body() edificioData: Partial<Edificio>): Promise<Edificio> {
-    return this.edificiosService.create(edificioData);
+  create(@Body() createEdificioDto: CreateEdificioDto): Promise<Edificio> {
+    return this.edificiosService.create(createEdificioDto);
   }
 
   @ApiOperation({ summary: 'Actualizar edificio' })
   @ApiResponse({ status: 200, description: 'Edificio actualizado correctamente.', type: Edificio })
   @Put(':id')
-  update(@Param('id') id: number, @Body() edificioData: Partial<Edificio>) {
-    return this.edificiosService.update(id, edificioData);
+  update(@Param('id') id: number, @Body() updateEdificioDto: UpdateEdificioDto) {
+    return this.edificiosService.update(id, updateEdificioDto);
   }
 
   @ApiOperation({ summary: 'Eliminar edificio' })

@@ -1,7 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { TipoSistema } from './tipo-sistema.entity';
+import { CreateTipoSistemaDto } from './dto/create-tipo-sistema.dto';
+import { UpdateTipoSistemaDto } from './dto/update-tipo-sistema.dto';
 
 @Injectable()
 export class TiposSistemaService {
@@ -14,20 +16,25 @@ export class TiposSistemaService {
     return this.tipoSistemaRepo.find({ relations: ['tickets'] });
   }
 
-  findOne(id: number): Promise<TipoSistema | null> {
-    return this.tipoSistemaRepo.findOne({ where: { id }, relations: ['tickets'] });
+  async findOne(id: number): Promise<TipoSistema> {
+    const tipo = await this.tipoSistemaRepo.findOne({ where: { id }, relations: ['tickets'] });
+    if (!tipo) throw new NotFoundException('Tipo de sistema no encontrado');
+    return tipo;
   }
 
-  create(tipoData: Partial<TipoSistema>): Promise<TipoSistema> {
-    const tipo = this.tipoSistemaRepo.create(tipoData);
+  async create(createDto: CreateTipoSistemaDto): Promise<TipoSistema> {
+    const tipo = this.tipoSistemaRepo.create(createDto);
     return this.tipoSistemaRepo.save(tipo);
   }
 
-  update(id: number, tipoData: Partial<TipoSistema>): Promise<any> {
-    return this.tipoSistemaRepo.update(id, tipoData);
+  async update(id: number, updateDto: UpdateTipoSistemaDto): Promise<TipoSistema> {
+    const tipo = await this.findOne(id);
+    Object.assign(tipo, updateDto);
+    return this.tipoSistemaRepo.save(tipo);
   }
 
-  remove(id: number): Promise<any> {
-    return this.tipoSistemaRepo.delete(id);
+  async remove(id: number): Promise<void> {
+    const tipo = await this.findOne(id);
+    await this.tipoSistemaRepo.remove(tipo);
   }
 }

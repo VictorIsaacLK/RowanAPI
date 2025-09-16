@@ -1,7 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Edificio } from './edificio.entity';
+import { CreateEdificioDto } from './dto/create-edificio.dto';
+import { UpdateEdificioDto } from './dto/update-edificio.dto';
 
 @Injectable()
 export class EdificiosService {
@@ -14,20 +16,25 @@ export class EdificiosService {
     return this.edificioRepo.find();
   }
 
-  findOne(id: number): Promise<Edificio | null> {
-    return this.edificioRepo.findOne({ where: { id } });
+  async findOne(id: number): Promise<Edificio> {
+    const edificio = await this.edificioRepo.findOne({ where: { id } });
+    if (!edificio) throw new NotFoundException('Edificio no encontrado');
+    return edificio;
   }
 
-  create(edificioData: Partial<Edificio>): Promise<Edificio> {
-    const edificio = this.edificioRepo.create(edificioData);
+  async create(createDto: CreateEdificioDto): Promise<Edificio> {
+    const edificio = this.edificioRepo.create(createDto);
     return this.edificioRepo.save(edificio);
   }
 
-  update(id: number, edificioData: Partial<Edificio>): Promise<any> {
-    return this.edificioRepo.update(id, edificioData);
+  async update(id: number, updateDto: UpdateEdificioDto): Promise<Edificio> {
+    const edificio = await this.findOne(id);
+    Object.assign(edificio, updateDto);
+    return this.edificioRepo.save(edificio);
   }
 
-  remove(id: number): Promise<any> {
-    return this.edificioRepo.delete(id);
+  async remove(id: number): Promise<void> {
+    const edificio = await this.findOne(id);
+    await this.edificioRepo.remove(edificio);
   }
 }
